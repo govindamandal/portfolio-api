@@ -1,6 +1,16 @@
 # Portfolio API
 
-Vercel serverless API for the dynamic portfolio and admin panel.
+Next.js API for the dynamic portfolio and admin panel.
+
+## Structure
+
+```text
+pages/api/          Route files
+src/models/         Mongoose models
+src/services/       Data access and business logic
+src/controllers/    Request handlers
+src/lib/            DB, auth, CORS, R2 helpers
+```
 
 ## Environment Variables
 
@@ -43,6 +53,7 @@ node -e "const bcrypt=require('bcryptjs'); bcrypt.hash('your-password', 10).then
 - `GET /api/health`
 - `GET /api/public/site`
 - `GET /api/public/:collection`
+- `GET /api/projects/:slug`
 - `POST /api/contact`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
