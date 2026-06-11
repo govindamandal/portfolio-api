@@ -80,7 +80,7 @@ const Skill = model('Skill', new Schema({
     enum: ['Backend', 'Frontend', 'Database', 'Messaging & Streaming', 'Cloud', 'Observability & Tools', 'AI Tools', 'Other'],
     default: 'Other'
   },
-  proficiency: { type: Number, min: 1, max: 10, default: 5 },
+  proficiency: { type: Number, min: 0, max: 100, default: 50 },
   icon: String,
   displayOrder: { type: Number, default: 0 },
   isPublic: { type: Boolean, default: true }
