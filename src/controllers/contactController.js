@@ -1,7 +1,8 @@
 const { z } = require('zod')
 const { connectDb } = require('../lib/db')
+const { hasEmailJsConfig, sendContactEmail } = require('../lib/emailjs')
 const { sendMethodNotAllowed } = require('../lib/http')
-const { ContactMessage } = require('../models')
+const { ContactMessage, Profile } = require('../models')
 
 async function createContactMessage(req, res) {
   if (req.method !== 'POST') {
@@ -20,8 +21,37 @@ async function createContactMessage(req, res) {
   }
 
   await connectDb()
-  await ContactMessage.create(parsed.data)
-  return res.status(201).json({ ok: true })
+  const [message, profile] = await Promise.all([
+    ContactMessage.create(parsed.data),
+    Profile.findOne({
+      $or: [
+        { isPublic: { $exists: false } },
+        { isPublic: true }
+      ]
+    })
+  ])
+
+  const toEmail = profile?.email
+
+  if (!toEmail || !hasEmailJsConfig()) {
+    return res.status(201).json({
+      ok: true,
+      emailSent: false,
+      messageId: message._id.toString()
+    })
+  }
+
+  await sendContactEmail({
+    ...parsed.data,
+    toEmail,
+    toName: profile?.name
+  })
+
+  return res.status(201).json({
+    ok: true,
+    emailSent: true,
+    messageId: message._id.toString()
+  })
 }
 
 module.exports = { createContactMessage }
