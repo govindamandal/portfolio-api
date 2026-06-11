@@ -27,6 +27,8 @@ async function createUploadUrl({ fileName, contentType }) {
   return {
     uploadUrl: await getSignedUrl(s3, command, { expiresIn: 300 }),
     key,
+    fileName,
+    contentType,
     publicUrl: publicUrl ? `${publicUrl.replace(/\/$/, '')}/${key}` : null
   }
 }
