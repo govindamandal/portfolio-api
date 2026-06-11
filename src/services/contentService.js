@@ -1,4 +1,5 @@
 const { connectDb } = require('../lib/db')
+const { normalizeAssetUrls } = require('../lib/assetUrls')
 const { serialize } = require('../lib/http')
 const { collectionModels } = require('../models')
 
@@ -44,7 +45,7 @@ async function listPublic(collection) {
   await connectDb()
   const Model = getModel(collection)
   const documents = await Model.find(publicFilter(collection)).sort(sortForCollection(collection))
-  return documents.map(serialize)
+  return documents.map((document) => normalizeAssetUrls(serialize(document)))
 }
 
 async function getSitePayload() {
@@ -58,8 +59,8 @@ async function getSitePayload() {
   ])
 
   return {
-    profile: serialize(profile),
-    siteSettings: serialize(siteSettings),
+    profile: normalizeAssetUrls(serialize(profile)),
+    siteSettings: normalizeAssetUrls(serialize(siteSettings)),
     services: lists[0],
     experiences: lists[1],
     projects: lists[2],
@@ -106,7 +107,7 @@ async function getProjectBySlug(slug) {
   await connectDb()
   const Project = getModel('projects')
   const project = await Project.findOne({ slug, ...publicFilter('projects') })
-  return serialize(project)
+  return normalizeAssetUrls(serialize(project))
 }
 
 module.exports = {

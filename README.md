@@ -25,6 +25,11 @@ Copy `.env.example` into Vercel Project Settings and fill the real values:
 - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
 - `CLOUDFLARE_R2_BUCKET`
 - `CLOUDFLARE_R2_PUBLIC_URL`
+- `API_PUBLIC_URL`
+
+`CLOUDFLARE_R2_PUBLIC_URL` must be a browser-loadable R2 public development URL, such as `https://pub-xxxxx.r2.dev`, or a custom R2 domain. Do not use `https://<account_id>.r2.cloudflarestorage.com` here; that is the private S3 API endpoint and browsers will receive an authorization XML error.
+
+If you do not want to expose the R2 bucket publicly, leave `CLOUDFLARE_R2_PUBLIC_URL` empty and set `API_PUBLIC_URL` to the deployed API origin. The API will serve saved assets from `/api/assets/...`.
 
 ## Admin User
 
@@ -63,3 +68,4 @@ node -e "const bcrypt=require('bcryptjs'); bcrypt.hash('your-password', 10).then
 - `PUT /api/admin/:collection/:id`
 - `DELETE /api/admin/:collection/:id`
 - `POST /api/admin/assets/upload-url`
+- `GET /api/assets/:key`
